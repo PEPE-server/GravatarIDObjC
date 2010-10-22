@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 
-@protocol GravatarService
+@protocol GravatarService <NSObject>
 
 -(void)cancelRequest;
 

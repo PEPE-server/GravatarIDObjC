@@ -22,7 +22,7 @@
 @property (retain) NSURLConnection *connection;
 
 +(GravatarUIImageFactory *)gravatarUIImageFactoryWithDelegate:
-(id<GravatarServiceDelegate>) delegate;
+(id<GravatarServiceDelegate>)delegate;
 
 -(void)requestUIImageByGravatarId:(NSString *)gravatarId size:(NSInteger)size;
 

@@ -28,9 +28,9 @@
 }
 
 -(GravatarUIImageFactory *) initWithGravatarDelegate:
-(id<GravatarServiceDelegate>) newDelegate {
+(id<GravatarServiceDelegate>)newDelegate {
   
-  if (self = [super init]){
+  if (self = [super init]) {
     
     self.delegate = newDelegate;
   }
@@ -38,7 +38,7 @@
 }
 
 +(GravatarUIImageFactory *)gravatarUIImageFactoryWithDelegate:
-(id<GravatarServiceDelegate>) delegate {
+(id<GravatarServiceDelegate>)delegate {
   
   return [[[GravatarUIImageFactory alloc]
            initWithGravatarDelegate:delegate] autorelease]; 
