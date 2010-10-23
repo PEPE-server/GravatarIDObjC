@@ -6,6 +6,7 @@
 //  Copyright 2010 Patchwork Solutions AB. All rights reserved.
 //
 
+#import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
 @protocol GravatarService;

@@ -59,6 +59,7 @@
   } else {
     
     [self.delegate gravatarService:self didFailWithError:nil];
+    [self cleanUp];
   }
 }
 
@@ -81,6 +82,7 @@
   } else {
       
     [self.delegate gravatarService:self didFailWithError:nil];
+    [self cleanUp];
   }
 }
 
@@ -116,8 +118,7 @@ didReceiveResponse:(NSURLResponse *)response {
  didFailWithError:(NSError *)error {
   
   [self.delegate gravatarService:self didFailWithError:error];
-  self.receivedData = nil;
-  self.connection = nil;
+  [self cleanUp];
 }
 
 -(void)connectionDidFinishLoading:(NSURLConnection *)connection {
@@ -125,14 +126,12 @@ didReceiveResponse:(NSURLResponse *)response {
   [self.delegate gravatarServiceDone:self
                            withImage:[UIImage imageWithData:self.receivedData]];
   
-  self.receivedData = nil;
-  self.connection = nil;
+  [self cleanUp];
 }
 
 -(void)cancelRequest {
-
-  self.connection = nil;
-  self.receivedData = nil;
+  
+  [self cleanUp];
 }
 
 -(void)setConnection:(NSURLConnection *)newConnection {
@@ -142,10 +141,15 @@ didReceiveResponse:(NSURLResponse *)response {
   connection = [newConnection retain];
 }
 
+-(void)cleanUp {
+  self.connection = nil;
+  self.delegate = nil;
+  self.receivedData = nil;
+}
+
 -(void)dealloc {
   
-  self.receivedData = nil;
-  self.connection = nil;
+  [self cleanUp];
   [super dealloc];
 }
 

@@ -6,7 +6,6 @@
 //  Copyright 2010 Patchwork Solutions AB. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "GravatarService.h"
 
 @protocol GravatarServiceDelegate;
@@ -17,7 +16,7 @@
   NSURLConnection *connection;
 }
 
-@property (assign) id<GravatarServiceDelegate> delegate;
+@property (retain) id<GravatarServiceDelegate> delegate;
 @property (retain) NSMutableData *receivedData;
 @property (retain) NSURLConnection *connection;
 
@@ -31,5 +30,7 @@
 -(void)requestUIImageByEmail:(NSString *)gravatarId size:(NSInteger)size;
 
 -(void)requestUIImageByEmail:(NSString *)gravatarId;
+
+-(void)cleanUp;
 
 @end

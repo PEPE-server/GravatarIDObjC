@@ -9,7 +9,6 @@
 #import "GravatarServiceFactory.h"
 #import "GravatarUIImageFactory.h"
 
-
 @implementation GravatarServiceFactory
 
 +(id<GravatarService>)requestUIImageByGravatarId:(NSString *)gravtarId
@@ -59,6 +58,5 @@ delegate:(id<GravatarServiceDelegate>)delegate {
   
 	return service;
 }
-
 
 @end
