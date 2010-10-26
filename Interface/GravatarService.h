@@ -11,6 +11,19 @@
 
 @protocol GravatarService <NSObject>
 
+@property (readonly, copy) NSString *email;
+@property (readonly, copy) NSString *gravatarid;
+
 -(void)cancelRequest;
 
 @end
+
+extern NSString * const GravatarServerErrorDomain;
+
+typedef enum {
+  GravatarServerInternalError = 1,
+  GravatarServerOutOfMemoryError = 2,
+  GravatarServerServerError = 3,
+  GravatarServerArgumentError = 4,
+  GravatarServerConnectionError = 5,
+} GravatarServerError;

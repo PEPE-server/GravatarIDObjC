@@ -12,7 +12,42 @@
 
 @implementation GravatarUIImageFactory
 
+#pragma mark -
+#pragma mark Memory and member management
+
+//Copy
+@synthesize email, gravatarid;
+
+//Retain
 @synthesize delegate, receivedData, connection;
+
+//Assign
+@synthesize cancelling, failSent;
+
+-(void)cleanUp {
+  
+  self.connection = nil;
+  self.delegate = nil;
+  self.receivedData = nil;
+}
+
+-(void)dealloc {
+  self.gravatarid = nil;
+  self.email = nil;
+  [self cleanUp];
+  [super dealloc];
+}
+
+-(void)setConnection:(NSURLConnection *)newConnection {
+  
+  [connection cancel];
+  [connection release];
+  connection = [newConnection retain];
+}
+
+#pragma mark -
+#pragma mark Internal implementation
+#pragma mark - Class
 
 +(NSString *)md5:(NSString *)str {
   const char *cStr = [str UTF8String];
@@ -27,21 +62,31 @@
           ]; 
 }
 
--(GravatarUIImageFactory *) initWithGravatarDelegate:
-(id<GravatarServiceDelegate>)newDelegate {
++(NSString *)calculateGravatarId:(NSString *)anEmail {
   
-  if (self = [super init]) {
-    
-    self.delegate = newDelegate;
-  }
-  return self;
+  return [[GravatarUIImageFactory
+           md5:[[anEmail
+                 stringByTrimmingCharactersInSet:
+                 [NSCharacterSet whitespaceAndNewlineCharacterSet]]
+                lowercaseString]] lowercaseString];
 }
 
-+(GravatarUIImageFactory *)gravatarUIImageFactoryWithDelegate:
-(id<GravatarServiceDelegate>)delegate {
+#pragma mark - Instance
+
+-(void)handleErrorWithCode:(GravatarServerError)code {
   
-  return [[[GravatarUIImageFactory alloc]
-           initWithGravatarDelegate:delegate] autorelease]; 
+  if (!self.cancelling && !self.failSent) {
+    
+    self.failSent = YES;
+    
+    [self.delegate gravatarService:self
+                  didFailWithError:[NSError
+                                    errorWithDomain:GravatarServerErrorDomain
+                                    code:code
+                                    userInfo:nil]];
+    
+    [self cleanUp];
+  }
 }
 
 -(void)makeRequest:(NSString *)request {
@@ -58,50 +103,25 @@
     self.receivedData = [NSMutableData data];
   } else {
     
-    [self.delegate gravatarService:self didFailWithError:nil];
-    [self cleanUp];
+    [self handleErrorWithCode:GravatarServerConnectionError];
   }
 }
 
--(NSString *)calculateGravatarId:(NSString *)email {
- 
-  return [GravatarUIImageFactory
-          md5:[[email
-                stringByTrimmingCharactersInSet:
-                [NSCharacterSet whitespaceAndNewlineCharacterSet]]
-               lowercaseString]];
-}
-
--(void)requestUIImageByGravatarId:(NSString *)gravatarId size:(NSInteger) size {
+-(GravatarUIImageFactory *) initWithGravatarDelegate:
+(id<GravatarServiceDelegate>)newDelegate {
   
-  if ((size > 0) && size < 512) {
+  if (self = [super init]) {
     
-    [self makeRequest:
-    [NSString stringWithFormat:@"http://www.gravatar.com/avatar/%@?s=%i",
-     gravatarId, size]];
-  } else {
-      
-    [self.delegate gravatarService:self didFailWithError:nil];
-    [self cleanUp];
+    self.cancelling = NO;
+    self.failSent = NO;
+    self.delegate = newDelegate;
   }
+  return self;
 }
 
--(void)requestUIImageByEmail:(NSString *)email {
-
-  [self requestUIImageByGravatarId:[self calculateGravatarId:email]];
-}
-
--(void)requestUIImageByEmail:(NSString *)email size:(NSInteger)size {
-
-  [self requestUIImageByGravatarId:[self calculateGravatarId:email] size:size];
-}
-
--(void)requestUIImageByGravatarId:(NSString *)gravatarId {
-  
-  [self makeRequest:
-   [NSString stringWithFormat:@"http://www.gravatar.com/avatar/%@",
-    gravatarId]];
-}
+#pragma mark -
+#pragma mark Delegate protocol implementation
+#pragma mark - NSURLConnectionDelegate
 
 -(void)connection:(NSURLConnection *)connection
 didReceiveResponse:(NSURLResponse *)response {
@@ -117,8 +137,7 @@ didReceiveResponse:(NSURLResponse *)response {
 -(void)connection:(NSURLConnection *)connection
  didFailWithError:(NSError *)error {
   
-  [self.delegate gravatarService:self didFailWithError:error];
-  [self cleanUp];
+  [self handleErrorWithCode:GravatarServerConnectionError];
 }
 
 -(void)connectionDidFinishLoading:(NSURLConnection *)connection {
@@ -129,28 +148,64 @@ didReceiveResponse:(NSURLResponse *)response {
   [self cleanUp];
 }
 
+#pragma mark -
+#pragma mark Interface implementation
+#pragma mark - Instance
+
 -(void)cancelRequest {
-  
+  self.cancelling = YES;
   [self cleanUp];
 }
 
--(void)setConnection:(NSURLConnection *)newConnection {
+-(void)requestUIImageByEmail:(NSString *)anEmail {
   
-  [connection cancel];
-  [connection release];
-  connection = [newConnection retain];
+  self.email = anEmail;
+  
+  [self requestUIImageByGravatarId:[GravatarUIImageFactory
+                                    calculateGravatarId:anEmail]];
 }
 
--(void)cleanUp {
-  self.connection = nil;
-  self.delegate = nil;
-  self.receivedData = nil;
+-(void)requestUIImageByEmail:(NSString *)anEmail size:(NSInteger)size {
+  
+  self.email = anEmail;
+  
+  [self requestUIImageByGravatarId:[GravatarUIImageFactory
+                                    calculateGravatarId:anEmail] size:size];
 }
 
--(void)dealloc {
+-(void)requestUIImageByGravatarId:(NSString *)gravatarId size:(NSInteger) size {
+ 
+  self.gravatarid = gravatarId;
   
-  [self cleanUp];
-  [super dealloc];
+  if ((size > 0) && size < 512) {
+    
+    [self makeRequest:
+     [NSString stringWithFormat:@"http://www.gravatar.com/avatar/%@?s=%i",
+      gravatarId, size]];
+  } else {
+    
+    [self handleErrorWithCode:GravatarServerArgumentError];
+  }
+}
+
+-(void)requestUIImageByGravatarId:(NSString *)gravatarId {
+  
+  self.gravatarid = gravatarId;
+  
+  [self makeRequest:
+   [NSString stringWithFormat:@"http://www.gravatar.com/avatar/%@",
+    gravatarId]];
+}
+
+#pragma mark - Class
+
+NSString * const GravatarServerErrorDomain = @"GravatarServerErrorDomain";
+
++(GravatarUIImageFactory *)gravatarUIImageFactoryWithDelegate:
+(id<GravatarServiceDelegate>)delegate {
+  
+  return [[[GravatarUIImageFactory alloc]
+           initWithGravatarDelegate:delegate] autorelease]; 
 }
 
 @end

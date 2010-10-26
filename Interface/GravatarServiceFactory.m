@@ -11,6 +11,10 @@
 
 @implementation GravatarServiceFactory
 
+#pragma mark -
+#pragma mark Interface implementation
+#pragma mark - Class
+
 +(id<GravatarService>)requestUIImageByGravatarId:(NSString *)gravtarId
                                             size:(NSInteger)size
 delegate:(id<GravatarServiceDelegate>)delegate {

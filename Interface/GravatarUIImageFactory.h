@@ -11,14 +11,22 @@
 @protocol GravatarServiceDelegate;
 
 @interface GravatarUIImageFactory : NSObject <GravatarService> {
+  NSString *email;
+  NSString *gravatarid;
   id<GravatarServiceDelegate> delegate;
   NSMutableData *receivedData;
   NSURLConnection *connection;
+  BOOL failSent;
+  BOOL cancelling;
 }
 
+@property (copy) NSString *email;
+@property (copy) NSString *gravatarid;
 @property (retain) id<GravatarServiceDelegate> delegate;
 @property (retain) NSMutableData *receivedData;
 @property (retain) NSURLConnection *connection;
+@property (assign) BOOL failSent;
+@property (assign) BOOL cancelling;
 
 +(GravatarUIImageFactory *)gravatarUIImageFactoryWithDelegate:
 (id<GravatarServiceDelegate>)delegate;
@@ -30,7 +38,5 @@
 -(void)requestUIImageByEmail:(NSString *)gravatarId size:(NSInteger)size;
 
 -(void)requestUIImageByEmail:(NSString *)gravatarId;
-
--(void)cleanUp;
 
 @end

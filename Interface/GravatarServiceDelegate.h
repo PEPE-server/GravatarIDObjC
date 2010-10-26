@@ -16,5 +16,5 @@
                  withImage:(UIImage *)image;
 
 -(void)gravatarService:(id<GravatarService>)gravatarService
-      didFailWithError:(NSError *)error;;
+      didFailWithError:(NSError *)error;
 @end
