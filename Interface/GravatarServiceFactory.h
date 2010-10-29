@@ -16,17 +16,21 @@
 }
 
 +(id<GravatarService>)requestUIImageByGravatarId:(NSString *)gravtarId
-                                            size:(NSInteger)size
-                                        delegate:(id<GravatarServiceDelegate>)delegate;
+defaultImage:(NSString *)defaultImage
+size:(NSInteger)size
+delegate:(id<GravatarServiceDelegate>)delegate;
 
 +(id<GravatarService>)requestUIImageByGravatarId:(NSString *)gravtarId
-                                        delegate:(id<GravatarServiceDelegate>)delegate;
+defaultImage:(NSString *)defaultImage
+delegate:(id<GravatarServiceDelegate>)delegate;
 
 +(id<GravatarService>)requestUIImageByEmail:(NSString *)gravtarId
-                                            size:(NSInteger)size
-                                        delegate:(id<GravatarServiceDelegate>)delegate;
+defaultImage:(NSString *)defaultImage
+size:(NSInteger)size
+delegate:(id<GravatarServiceDelegate>)delegate;
 
 +(id<GravatarService>)requestUIImageByEmail:(NSString *)gravtarId
-                                        delegate:(id<GravatarServiceDelegate>)delegate;
+defaultImage:(NSString *)defaultImage
+delegate:(id<GravatarServiceDelegate>)delegate;
 
 @end

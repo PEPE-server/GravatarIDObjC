@@ -27,3 +27,11 @@ typedef enum {
   GravatarServerArgumentError = 4,
   GravatarServerConnectionError = 5,
 } GravatarServerError;
+
+extern NSString * const gravatarServerImageDefault;
+extern NSString * const gravatarServerImage404;
+extern NSString * const gravatarServerImageMysteryMan;
+extern NSString * const gravatarServerImageIdenticon;
+extern NSString * const gravatarServerImageMonsterId;
+extern NSString * const gravatarServerImageWavatar;
+extern NSString * const gravatarServerImageRetro;

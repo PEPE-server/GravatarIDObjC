@@ -31,12 +31,18 @@
 +(GravatarUIImageFactory *)gravatarUIImageFactoryWithDelegate:
 (id<GravatarServiceDelegate>)delegate;
 
--(void)requestUIImageByGravatarId:(NSString *)gravatarId size:(NSInteger)size;
+-(void)requestUIImageByGravatarId:(NSString *)gravatarId
+                     defaultImage:(NSString *)defaultImage
+                             size:(NSInteger)size;
 
--(void)requestUIImageByGravatarId:(NSString *)gravatarId;
+-(void)requestUIImageByGravatarId:(NSString *)gravatarId
+                     defaultImage:(NSString *)defaultImage;
 
--(void)requestUIImageByEmail:(NSString *)gravatarId size:(NSInteger)size;
+-(void)requestUIImageByEmail:(NSString *)gravatarId
+                defaultImage:(NSString *)defaultImage
+                        size:(NSInteger)size;
 
--(void)requestUIImageByEmail:(NSString *)gravatarId;
+-(void)requestUIImageByEmail:(NSString *)gravatarId
+                defaultImage:(NSString *)defaultImage;
 
 @end

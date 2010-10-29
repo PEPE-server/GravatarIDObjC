@@ -16,6 +16,7 @@
 #pragma mark - Class
 
 +(id<GravatarService>)requestUIImageByGravatarId:(NSString *)gravtarId
+                                    defaultImage:(NSString *)defaultImage
                                             size:(NSInteger)size
 delegate:(id<GravatarServiceDelegate>)delegate {
   
@@ -23,23 +24,27 @@ delegate:(id<GravatarServiceDelegate>)delegate {
                                   gravatarUIImageFactoryWithDelegate:delegate];
   
 	[service requestUIImageByGravatarId:gravtarId
+                         defaultImage:defaultImage
                                  size:size];
   
 	return service;
 }
 
 +(id<GravatarService>)requestUIImageByGravatarId:(NSString *)gravtarId
+                                    defaultImage:(NSString *)defaultImage
 delegate:(id<GravatarServiceDelegate>)delegate {
   
 	GravatarUIImageFactory *service = [GravatarUIImageFactory
                               gravatarUIImageFactoryWithDelegate:delegate];
   
-	[service requestUIImageByGravatarId:gravtarId];
+	[service requestUIImageByGravatarId:gravtarId
+                         defaultImage:defaultImage];
   
 	return service;  
 }
 
 +(id<GravatarService>)requestUIImageByEmail:(NSString *)gravtarId
+                               defaultImage:(NSString *)defaultImage
                                        size:(NSInteger)size
 delegate:(id<GravatarServiceDelegate>)delegate {
   
@@ -47,18 +52,21 @@ delegate:(id<GravatarServiceDelegate>)delegate {
                               gravatarUIImageFactoryWithDelegate:delegate];
   
 	[service requestUIImageByEmail:gravtarId
+                    defaultImage:defaultImage
                             size:size];
   
 	return service;
 }
 
 +(id<GravatarService>)requestUIImageByEmail:(NSString *)gravtarId
+                               defaultImage:(NSString *)defaultImage
 delegate:(id<GravatarServiceDelegate>)delegate {
   
 	GravatarUIImageFactory *service = [GravatarUIImageFactory
                               gravatarUIImageFactoryWithDelegate:delegate];
   
-	[service requestUIImageByEmail:gravtarId];
+	[service requestUIImageByEmail:gravtarId
+                    defaultImage:defaultImage];
   
 	return service;
 }

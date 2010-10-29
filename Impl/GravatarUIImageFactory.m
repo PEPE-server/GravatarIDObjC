@@ -47,7 +47,7 @@
 
 #pragma mark -
 #pragma mark Internal implementation
-#pragma mark - Class
+#pragma mark - Class 
 
 +(NSString *)md5:(NSString *)str {
   const char *cStr = [str UTF8String];
@@ -157,49 +157,66 @@ didReceiveResponse:(NSURLResponse *)response {
   [self cleanUp];
 }
 
--(void)requestUIImageByEmail:(NSString *)anEmail {
+-(void)requestUIImageByEmail:(NSString *)anEmail
+                defaultImage:(NSString *)defaultImage {
   
   self.email = anEmail;
   
   [self requestUIImageByGravatarId:[GravatarUIImageFactory
-                                    calculateGravatarId:anEmail]];
+                                    calculateGravatarId:anEmail]
+                      defaultImage:defaultImage];
 }
 
--(void)requestUIImageByEmail:(NSString *)anEmail size:(NSInteger)size {
+-(void)requestUIImageByEmail:(NSString *)anEmail
+                defaultImage:(NSString *)defaultImage
+                        size:(NSInteger)size {
   
   self.email = anEmail;
   
   [self requestUIImageByGravatarId:[GravatarUIImageFactory
-                                    calculateGravatarId:anEmail] size:size];
+                                    calculateGravatarId:anEmail]
+                              defaultImage:defaultImage
+                              size:size];
 }
 
--(void)requestUIImageByGravatarId:(NSString *)gravatarId size:(NSInteger) size {
+-(void)requestUIImageByGravatarId:(NSString *)gravatarId
+                     defaultImage:(NSString *)defaultImage
+                             size:(NSInteger)size {
  
   self.gravatarid = gravatarId;
   
-  if ((size > 0) && size < 512) {
+  if ((size > 0) && (size < 512)) {
     
     [self makeRequest:
-     [NSString stringWithFormat:@"http://www.gravatar.com/avatar/%@?s=%i",
-      gravatarId, size]];
+     [NSString stringWithFormat:@"http://www.gravatar.com/avatar/%@?s=%i&d=%@",
+      gravatarId, size, defaultImage]];
   } else {
     
     [self handleErrorWithCode:GravatarServerArgumentError];
   }
 }
 
--(void)requestUIImageByGravatarId:(NSString *)gravatarId {
+-(void)requestUIImageByGravatarId:(NSString *)gravatarId
+                     defaultImage:(NSString *)defaultImage {
   
   self.gravatarid = gravatarId;
   
   [self makeRequest:
-   [NSString stringWithFormat:@"http://www.gravatar.com/avatar/%@",
-    gravatarId]];
+   [NSString stringWithFormat:@"http://www.gravatar.com/avatar/%@&d=%@",
+    gravatarId, defaultImage]];
 }
 
 #pragma mark - Class
 
 NSString * const GravatarServerErrorDomain = @"GravatarServerErrorDomain";
+
+NSString * const gravatarServerImageDefault = @"";
+NSString * const gravatarServerImage404 = @"404";
+NSString * const gravatarServerImageMysteryMan = @"mm";
+NSString * const gravatarServerImageIdenticon = @"identicon";
+NSString * const gravatarServerImageMonsterId = @"monsterid";
+NSString * const gravatarServerImageWavatar = @"wavatar";
+NSString * const gravatarServerImageRetro = @"retro";
 
 +(GravatarUIImageFactory *)gravatarUIImageFactoryWithDelegate:
 (id<GravatarServiceDelegate>)delegate {
