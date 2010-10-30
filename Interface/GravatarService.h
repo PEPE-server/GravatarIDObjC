@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-
 @protocol GravatarService <NSObject>
 
 @property (readonly, copy) NSString *email;
@@ -21,11 +20,8 @@
 extern NSString * const GravatarServerErrorDomain;
 
 typedef enum {
-  GravatarServerInternalError = 1,
-  GravatarServerOutOfMemoryError = 2,
-  GravatarServerServerError = 3,
-  GravatarServerArgumentError = 4,
-  GravatarServerConnectionError = 5,
+  GravatarServerServerError = 1,
+  GravatarServerConnectionError = 2,
 } GravatarServerError;
 
 extern NSString * const gravatarServerImageDefault;

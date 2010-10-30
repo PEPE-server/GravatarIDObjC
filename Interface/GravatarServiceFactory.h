@@ -8,11 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol GravatarService;
-@protocol GravatarServiceDelegate;
+#import "GravatarService.h"
+#import "GravatarServiceDelegate.h"
 
 @interface GravatarServiceFactory : NSObject {
-
 }
 
 +(id<GravatarService>)requestUIImageByGravatarId:(NSString *)gravtarId

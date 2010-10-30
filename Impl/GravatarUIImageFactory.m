@@ -32,6 +32,7 @@
 }
 
 -(void)dealloc {
+  
   self.gravatarid = nil;
   self.email = nil;
   [self cleanUp];
@@ -50,9 +51,11 @@
 #pragma mark - Class 
 
 +(NSString *)md5:(NSString *)str {
+  
   const char *cStr = [str UTF8String];
   unsigned char result[16];
   CC_MD5( cStr, strlen(cStr), result );
+  
   return [NSString stringWithFormat:
           @"%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X",
           result[0], result[1], result[2], result[3], 
@@ -101,9 +104,7 @@
   if (self.connection) {
     
     self.receivedData = [NSMutableData data];
-  } else {
     
-    [self handleErrorWithCode:GravatarServerConnectionError];
   }
 }
 
@@ -153,12 +154,20 @@ didReceiveResponse:(NSURLResponse *)response {
 #pragma mark - Instance
 
 -(void)cancelRequest {
+  
   self.cancelling = YES;
   [self cleanUp];
 }
 
 -(void)requestUIImageByEmail:(NSString *)anEmail
                 defaultImage:(NSString *)defaultImage {
+  
+  if (!anEmail) {
+    
+    @throw [NSException exceptionWithName:NSInvalidArgumentException
+                                   reason:@"Email must not be nil"
+                                 userInfo:nil];
+  }
   
   self.email = anEmail;
   
@@ -171,6 +180,13 @@ didReceiveResponse:(NSURLResponse *)response {
                 defaultImage:(NSString *)defaultImage
                         size:(NSInteger)size {
   
+  if (!anEmail) {
+    
+    @throw [NSException exceptionWithName:NSInvalidArgumentException
+                                   reason:@"Email must not be nil"
+                                 userInfo:nil];
+  }
+  
   self.email = anEmail;
   
   [self requestUIImageByGravatarId:[GravatarUIImageFactory
@@ -182,28 +198,62 @@ didReceiveResponse:(NSURLResponse *)response {
 -(void)requestUIImageByGravatarId:(NSString *)gravatarId
                      defaultImage:(NSString *)defaultImage
                              size:(NSInteger)size {
- 
+  
+  if (!gravatarId) {
+    
+    @throw [NSException exceptionWithName:NSInvalidArgumentException
+                                   reason:@"GravatarId must not be nil"
+                                 userInfo:nil];
+  }
+  
   self.gravatarid = gravatarId;
   
   if ((size > 0) && (size < 512)) {
     
-    [self makeRequest:
-     [NSString stringWithFormat:@"http://www.gravatar.com/avatar/%@?s=%i&d=%@",
-      gravatarId, size, defaultImage]];
+    if (defaultImage) {
+      
+      [self makeRequest:
+       [NSString stringWithFormat:@"http://www.gravatar.com/avatar/%@?s=%i&d=%@",
+        gravatarId, size, defaultImage]];
+      
+    } else {
+      
+      @throw [NSException exceptionWithName:NSInvalidArgumentException
+                                     reason:@"Default image must not be nil"
+                                   userInfo:nil];
+    }
   } else {
     
-    [self handleErrorWithCode:GravatarServerArgumentError];
+    @throw [NSException exceptionWithName:NSInvalidArgumentException
+                                   reason:@"Size should be between 0 and 512"
+                                 userInfo:nil];
   }
 }
 
 -(void)requestUIImageByGravatarId:(NSString *)gravatarId
                      defaultImage:(NSString *)defaultImage {
   
+  if (!gravatarId) {
+    
+    @throw [NSException exceptionWithName:NSInvalidArgumentException
+                                   reason:@"GravatarId must not be nil"
+                                 userInfo:nil];
+  }
+  
   self.gravatarid = gravatarId;
   
-  [self makeRequest:
-   [NSString stringWithFormat:@"http://www.gravatar.com/avatar/%@&d=%@",
-    gravatarId, defaultImage]];
+  if (defaultImage) {
+    
+    [self makeRequest:
+     [NSString stringWithFormat:@"http://www.gravatar.com/avatar/%@&d=%@",
+      gravatarId, defaultImage]];
+    
+  } else {
+    
+    @throw [NSException exceptionWithName:NSInvalidArgumentException
+                                   reason:@"Default image must not be nil"
+                                 userInfo:nil];
+  }
 }
 
 #pragma mark - Class

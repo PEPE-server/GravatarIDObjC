@@ -8,8 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-
-@protocol GravatarService;
+#import "GravatarService.h"
 
 @protocol GravatarServiceDelegate
 -(void)gravatarServiceDone:(id<GravatarService>)gravatarService

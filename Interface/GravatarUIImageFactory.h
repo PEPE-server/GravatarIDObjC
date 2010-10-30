@@ -7,8 +7,7 @@
 //
 
 #import "GravatarService.h"
-
-@protocol GravatarServiceDelegate;
+#import "GravatarServiceDelegate.h"
 
 @interface GravatarUIImageFactory : NSObject <GravatarService> {
   NSString *email;
