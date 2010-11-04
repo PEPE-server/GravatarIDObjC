@@ -41,9 +41,15 @@
 
 -(void)setConnection:(NSURLConnection *)newConnection {
   
-  [connection cancel];
-  [connection release];
-  connection = [newConnection retain];
+  @synchronized(self) {
+    
+    if (connection != newConnection) {
+      
+      [connection cancel];
+      [connection release];
+      connection = [newConnection retain];
+    }
+  }
 }
 
 #pragma mark -
@@ -93,6 +99,7 @@
 }
 
 -(void)makeRequest:(NSString *)request {
+  
   NSURLRequest *theRequest = [NSURLRequest
                               requestWithURL:[NSURL URLWithString:request]
                               cachePolicy:NSURLRequestUseProtocolCachePolicy
