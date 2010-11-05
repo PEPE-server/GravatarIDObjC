@@ -1,0 +1,3 @@
+GravatarIDObjC
+=============
+A simple objective-c implementation of the Gravatar API, returning UIImages based on gravatar ids or email addresses.
