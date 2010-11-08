@@ -118,7 +118,9 @@
 -(GravatarUIImageFactory *) initWithGravatarDelegate:
 (id<GravatarServiceDelegate>)newDelegate {
   
-  if (self = [super init]) {
+  self = [super init];
+  
+  if (self) {
     
     self.cancelling = NO;
     self.failSent = NO;
